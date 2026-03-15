@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Emkaez — Makeup Studio & Salon | Islamabad</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --rose: #C4607A;
+    --rose-light: #E8A0B0;
+    --blush: #F7E8EE;
+    --deep-rose: #8B2A42;
+    --cream: #FDF8F5;
+    --warm: #F5ECF0;
+    --purple: #7A5080;
+    --purple-light: #C8A8D8;
+    --dark: #2A1520;
+    --muted: #8B6878;
+    --gold: #C4A060;
+  }
+
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--dark);
+    overflow-x: hidden;
+  }
+
+  /* Soft grain */
+  body::after {
+    content: '';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.025'/%3E%3C/svg%3E");
+    pointer-events: none; z-index: 999; opacity: 0.4;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.2rem 4rem;
+    background: rgba(253,248,245,0.93);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(196,96,122,0.12);
+  }
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem; font-weight: 700;
+    color: var(--dark); letter-spacing: 0.05em;
+    line-height: 1.1;
+  }
+  .nav-logo span { display: block; font-size: 0.58rem; font-weight: 400; letter-spacing: 0.22em; text-transform: uppercase; color: var(--rose); font-family: 'DM Sans', sans-serif; margin-top: 0.1rem; }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a {
+    text-decoration: none; font-size: 0.78rem;
+    font-weight: 500; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--dark);
+    opacity: 0.5; transition: opacity 0.2s, color 0.2s;
+  }
+  .nav-links a:hover { opacity: 1; color: var(--rose); }
+  .nav-actions { display: flex; gap: 0.8rem; align-items: center; }
+  .nav-wa {
+    border: 1.5px solid var(--rose);
+    color: var(--rose); padding: 0.6rem 1.2rem;
+    font-size: 0.72rem; font-weight: 600;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    text-decoration: none; border-radius: 2px;
+    transition: all 0.2s;
+  }
+  .nav-wa:hover { background: var(--rose); color: white; }
+  .nav-book {
+    background: var(--rose); color: white;
+    padding: 0.6rem 1.4rem; font-size: 0.72rem;
+    font-weight: 600; letter-spacing: 0.08em;
+    text-transform: uppercase; border: none;
+    border-radius: 2px; cursor: pointer;
+    box-shadow: 0 4px 14px rgba(196,96,122,0.3);
+    transition: all 0.2s;
+  }
+  .nav-book:hover { background: var(--deep-rose); transform: translateY(-1px); }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed; inset: 0; z-index: 1000;
+    background: rgba(42,21,32,0.7);
+    backdrop-filter: blur(8px);
+    display: none; align-items: center; justify-content: center; padding: 1rem;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--cream); border-radius: 16px;
+    padding: 2.5rem; width: 100%; max-width: 480px;
+    position: relative; animation: fadeUp 0.4s ease;
+    border: 1px solid rgba(196,96,122,0.2);
+    box-shadow: 0 24px 60px rgba(42,21,32,0.25);
+  }
+  .modal-close {
+    position: absolute; top: 1rem; right: 1.2rem;
+    background: none; border: none; font-size: 1.5rem;
+    cursor: pointer; color: var(--muted); transition: color 0.2s;
+  }
+  .modal-close:hover { color: var(--dark); }
+  .modal h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem; font-weight: 700;
+    margin-bottom: 0.3rem;
+  }
+  .modal h3 em { font-style: italic; color: var(--rose); }
+  .modal > p { font-size: 0.82rem; color: var(--muted); margin-bottom: 1.8rem; line-height: 1.6; }
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; margin-bottom: 0.8rem; }
+  .form-group { display: flex; flex-direction: column; gap: 0.35rem; }
+  .form-group.full { grid-column: 1 / -1; }
+  .form-group label { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+  .form-group input, .form-group select {
+    padding: 0.7rem 0.9rem;
+    border: 1.5px solid rgba(196,96,122,0.2);
+    border-radius: 6px; font-size: 0.85rem;
+    font-family: 'DM Sans', sans-serif;
+    background: white; color: var(--dark);
+    transition: border-color 0.2s; outline: none;
+  }
+  .form-group input:focus, .form-group select:focus { border-color: var(--rose); }
+  .form-submit {
+    width: 100%; padding: 0.95rem;
+    background: var(--rose); color: white;
+    border: none; border-radius: 6px;
+    font-size: 0.8rem; font-weight: 600;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    cursor: pointer; margin-top: 0.5rem;
+    transition: all 0.2s;
+    box-shadow: 0 6px 20px rgba(196,96,122,0.3);
+  }
+  .form-submit:hover { background: var(--deep-rose); transform: translateY(-1px); }
+  .form-note { text-align: center; font-size: 0.7rem; color: var(--muted); margin-top: 0.8rem; }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: grid; grid-template-columns: 1fr 1fr;
+    padding-top: 76px; overflow: hidden;
+  }
+
+  .hero-left {
+    padding: 5rem 3rem 4rem 4rem;
+    display: flex; flex-direction: column; justify-content: center;
+    animation: fadeUp 0.9s ease both;
+  }
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: rgba(196,96,122,0.08);
+    border: 1px solid rgba(196,96,122,0.2);
+    color: var(--rose); font-size: 0.7rem; font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    padding: 0.4rem 1rem; border-radius: 100px;
+    margin-bottom: 2rem; width: fit-content;
+  }
+  .hero-tag::before { content: '✦'; font-size: 0.6rem; }
+  .hero-h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3rem, 5vw, 6rem);
+    font-weight: 700; line-height: 0.92;
+    margin-bottom: 0.8rem; letter-spacing: -0.02em;
+  }
+  .hero-h1 em { font-style: italic; color: var(--rose); display: block; }
+  .hero-divider {
+    width: 50px; height: 2px; border-radius: 1px;
+    background: linear-gradient(90deg, var(--rose), var(--purple-light));
+    margin: 1.8rem 0;
+  }
+  .hero-p {
+    font-size: 0.95rem; line-height: 1.85;
+    color: var(--muted); max-width: 400px; margin-bottom: 2.5rem;
+  }
+  .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 3rem; }
+  .btn-rose {
+    background: var(--rose); color: white;
+    padding: 0.95rem 2.2rem; font-size: 0.8rem;
+    font-weight: 600; letter-spacing: 0.1em;
+    text-transform: uppercase; text-decoration: none;
+    border-radius: 2px;
+    box-shadow: 0 6px 20px rgba(196,96,122,0.3);
+    transition: all 0.2s; border: none; cursor: pointer;
+  }
+  .btn-rose:hover { background: var(--deep-rose); transform: translateY(-2px); }
+  .btn-outline {
+    border: 2px solid rgba(42,21,32,0.18);
+    color: var(--dark); padding: 0.95rem 2.2rem;
+    font-size: 0.8rem; font-weight: 500;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    text-decoration: none; border-radius: 2px;
+    transition: all 0.2s;
+  }
+  .btn-outline:hover { border-color: var(--rose); color: var(--rose); }
+  .hero-stats {
+    display: flex; gap: 2.5rem;
+    padding-top: 2.5rem;
+    border-top: 1px solid rgba(196,96,122,0.12);
+  }
+  .stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem; font-weight: 700;
+    color: var(--rose); line-height: 1;
+  }
+  .stat-label { font-size: 0.68rem; color: var(--muted); margin-top: 0.2rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; }
+
+  .hero-right {
+    position: relative; overflow: hidden;
+    background: linear-gradient(145deg, #2A1520, #3D1A2E);
+    animation: fadeIn 1.2s ease both 0.3s;
+  }
+  .hero-right::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse at 30% 60%, rgba(196,96,122,0.25) 0%, transparent 55%),
+      radial-gradient(ellipse at 80% 20%, rgba(122,80,128,0.2) 0%, transparent 50%);
+  }
+  .hero-mosaic {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr;
+    height: 100%; gap: 3px; padding: 3px;
+    position: relative; z-index: 1;
+  }
+  .mosaic-block {
+    border-radius: 4px; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 3rem; position: relative;
+    transition: transform 0.4s;
+  }
+  .mosaic-block:hover { transform: scale(0.97); }
+  .mosaic-block:nth-child(1) { grid-row: 1 / 3; background: linear-gradient(145deg, #3D1A2E, #5A2040); border-radius: 4px 60px 4px 4px; }
+  .mosaic-block:nth-child(2) { background: linear-gradient(145deg, #2A1535, #3D2050); }
+  .mosaic-block:nth-child(3) { background: linear-gradient(145deg, #351520, #4D2035); }
+  .mosaic-block:nth-child(4) { grid-column: 1 / 3; background: linear-gradient(145deg, #251020, #381530); border-radius: 4px 4px 60px 4px; min-height: 120px; }
+  .mosaic-label {
+    position: absolute; bottom: 0.7rem; left: 0.7rem;
+    background: rgba(253,248,245,0.12);
+    backdrop-filter: blur(8px);
+    font-size: 0.62rem; font-weight: 600;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 0.3rem 0.7rem; border-radius: 2px;
+    color: rgba(247,232,238,0.8);
+  }
+
+  /* MARQUEE */
+  .marquee-wrap {
+    background: var(--dark); color: rgba(247,232,238,0.5);
+    padding: 0.85rem 0; overflow: hidden; white-space: nowrap;
+  }
+  .marquee-inner {
+    display: inline-block;
+    animation: marquee 22s linear infinite;
+    font-size: 0.7rem; font-weight: 600;
+    letter-spacing: 0.2em; text-transform: uppercase;
+  }
+  .marquee-inner span { margin: 0 2rem; color: var(--rose-light); }
+
+  /* SERVICES */
+  .services { padding: 7rem 4rem; }
+  .sec-tag {
+    display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.8rem;
+  }
+  .sec-tag::before { content: ''; width: 30px; height: 1px; background: var(--rose); }
+  .sec-label { font-size: 0.68rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--rose); }
+  .sec-h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 3.5vw, 3.2rem);
+    font-weight: 700; line-height: 1.05; letter-spacing: -0.02em;
+    margin-bottom: 3rem;
+  }
+  .sec-h2 em { font-style: italic; color: var(--rose); }
+
+  .services-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem;
+  }
+  .service-card {
+    background: white; border-radius: 12px; padding: 2.2rem;
+    border: 1px solid rgba(196,96,122,0.1);
+    transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+    position: relative; overflow: hidden;
+    opacity: 0; transform: translateY(20px);
+  }
+  .service-card.visible { opacity: 1; transform: translateY(0); }
+  .service-card::after {
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--rose), var(--purple-light));
+    transform: scaleX(0); transition: transform 0.3s; transform-origin: left;
+  }
+  .service-card:hover { transform: translateY(-6px) !important; box-shadow: 0 20px 40px rgba(42,21,32,0.1); border-color: rgba(196,96,122,0.25); }
+  .service-card:hover::after { transform: scaleX(1); }
+  .service-icon { font-size: 2.2rem; margin-bottom: 1.2rem; }
+  .service-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem;
+  }
+  .service-desc { font-size: 0.82rem; color: var(--muted); line-height: 1.65; margin-bottom: 1rem; }
+  .service-price { font-size: 0.75rem; font-weight: 600; color: var(--rose); letter-spacing: 0.06em; }
+
+  /* ABOUT */
+  .about {
+    padding: 7rem 4rem; background: var(--warm);
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 6rem; align-items: center;
+  }
+  .about-visual {
+    background: linear-gradient(145deg, #2A1520, #3D1A2E);
+    border-radius: 8px 8px 80px 8px;
+    height: 500px; display: flex; align-items: center; justify-content: center;
+    font-size: 8rem; position: relative; overflow: hidden;
+  }
+  .about-visual::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(circle at 30% 70%, rgba(196,96,122,0.2) 0%, transparent 55%);
+  }
+  .about-badge {
+    position: absolute; bottom: -1rem; right: -1rem;
+    background: var(--rose); color: white;
+    width: 110px; height: 110px; border-radius: 50%;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    box-shadow: 0 8px 24px rgba(196,96,122,0.4);
+  }
+  .about-badge .num { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 700; line-height: 1; }
+  .about-badge .txt { font-size: 0.5rem; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.9; text-align: center; }
+  .about-content h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 3vw, 3rem); font-weight: 700;
+    line-height: 1.1; margin-bottom: 1.5rem; letter-spacing: -0.02em;
+  }
+  .about-content h2 em { font-style: italic; color: var(--rose); }
+  .about-content p { font-size: 0.9rem; line-height: 1.85; color: var(--muted); margin-bottom: 1.2rem; }
+  .about-pills { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1.8rem; }
+  .pill {
+    background: white; border: 1px solid rgba(196,96,122,0.15);
+    color: var(--dark); font-size: 0.75rem; font-weight: 500;
+    padding: 0.4rem 1rem; border-radius: 100px;
+    transition: all 0.2s;
+  }
+  .pill:hover { background: var(--rose); color: white; border-color: var(--rose); }
+
+  /* REVIEWS */
+  .reviews { padding: 7rem 4rem; background: var(--blush); }
+  .reviews-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 1.2rem; margin-top: 3.5rem;
+  }
+  .review-card {
+    background: white; border-radius: 12px; padding: 2rem;
+    border: 1px solid rgba(196,96,122,0.08);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .review-card:hover { transform: translateY(-4px); box-shadow: 0 16px 32px rgba(42,21,32,0.08); }
+  .review-quote {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 4rem; line-height: 0.5;
+    color: rgba(196,96,122,0.1); margin-bottom: 0.8rem;
+  }
+  .review-stars { color: var(--rose); font-size: 0.85rem; letter-spacing: 2px; margin-bottom: 0.8rem; }
+  .review-text { font-size: 0.83rem; line-height: 1.75; color: var(--muted); margin-bottom: 1.2rem; font-style: italic; }
+  .review-name { font-size: 0.8rem; font-weight: 600; color: var(--dark); }
+  .review-tag { font-size: 0.68rem; color: var(--rose); font-weight: 600; margin-top: 0.2rem; }
+
+  /* BOOKING */
+  .booking {
+    padding: 7rem 4rem; background: var(--dark); color: var(--cream);
+    display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center;
+  }
+  .booking h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.2rem, 4vw, 3.5rem); font-weight: 700;
+    line-height: 1.05; margin-bottom: 1.5rem; letter-spacing: -0.02em;
+  }
+  .booking h2 em { font-style: italic; color: var(--rose-light); }
+  .booking p { font-size: 0.9rem; line-height: 1.85; color: rgba(253,248,245,0.55); margin-bottom: 2rem; }
+  .booking-cards { display: flex; flex-direction: column; gap: 1rem; }
+  .booking-card {
+    display: flex; gap: 1rem; align-items: flex-start;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(196,96,122,0.15);
+    border-radius: 10px; padding: 1.2rem;
+    transition: border-color 0.2s;
+  }
+  .booking-card:hover { border-color: rgba(196,96,122,0.4); }
+  .booking-icon { font-size: 1.4rem; flex-shrink: 0; }
+  .booking-card h4 { font-size: 0.85rem; font-weight: 600; color: var(--cream); margin-bottom: 0.2rem; }
+  .booking-card p { font-size: 0.78rem; color: rgba(253,248,245,0.45); line-height: 1.5; margin: 0; }
+
+  /* FOOTER */
+  footer {
+    background: #1A0D14;
+    padding: 2.5rem 4rem;
+    display: flex; align-items: center; justify-content: space-between;
+    border-top: 1px solid rgba(196,96,122,0.12);
+  }
+  .footer-logo { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-weight: 700; color: var(--cream); letter-spacing: 0.05em; }
+  .footer-logo span { display: block; font-size: 0.58rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--rose-light); font-family: 'DM Sans', sans-serif; margin-top: 0.2rem; }
+  .footer-links { display: flex; gap: 2rem; list-style: none; }
+  .footer-links a { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(253,248,245,0.3); text-decoration: none; transition: color 0.2s; font-weight: 500; }
+  .footer-links a:hover { color: var(--rose-light); }
+  footer p { font-size: 0.72rem; color: rgba(253,248,245,0.2); }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    .hero { grid-template-columns: 1fr; }
+    .hero-right { height: 280px; }
+    .hero-left { padding: 3rem 1.5rem; }
+    .services, .reviews, .booking { padding: 4rem 1.5rem; }
+    .services-grid, .reviews-grid { grid-template-columns: 1fr; }
+    .about { grid-template-columns: 1fr; padding: 4rem 1.5rem; gap: 3rem; }
+    .booking { grid-template-columns: 1fr; gap: 3rem; }
+    footer { flex-direction: column; gap: 1.5rem; padding: 2rem 1.5rem; text-align: center; }
+    .footer-links { flex-wrap: wrap; justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">
+    Emkaez
+    <span>Makeup Studio & Salon · Islamabad</span>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#">Services</a></li>
+    <li><a href="#">About</a></li>
+    <li><a href="#">Reviews</a></li>
+    <li><a href="#">Gallery</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="https://wa.me/923106666992?text=Hi%20Emkaez!%20I'd%20like%20to%20book%20an%20appointment." target="_blank" class="nav-wa">WhatsApp</a>
+    <button class="nav-book" onclick="document.getElementById('bookModal').classList.add('open')">Book Now</button>
+  </div>
+</nav>
+
+<!-- BOOKING MODAL -->
+<div class="modal-overlay" id="bookModal">
+  <div class="modal">
+    <button class="modal-close" onclick="document.getElementById('bookModal').classList.remove('open')">×</button>
+    <h3>Book an <em>Appointment</em></h3>
+    <p>Fill in your details and we'll confirm your appointment via WhatsApp or call.</p>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Your Name</label>
+        <input type="text" placeholder="e.g. Sara Ahmed">
+      </div>
+      <div class="form-group">
+        <label>Phone Number</label>
+        <input type="tel" placeholder="+92 300 0000000">
+      </div>
+      <div class="form-group">
+        <label>Date</label>
+        <input type="date">
+      </div>
+      <div class="form-group">
+        <label>Time</label>
+        <input type="time">
+      </div>
+      <div class="form-group full">
+        <label>Service Required</label>
+        <select>
+          <option>Hair — Cut & Style</option>
+          <option>Hair — Highlights / Balayage</option>
+          <option>Hair — Nanoplastica / Treatment</option>
+          <option>Nails — Manicure & Pedicure</option>
+          <option>Makeup — Bridal</option>
+          <option>Makeup — Party / Event</option>
+          <option>Facial & Skincare</option>
+          <option>Multiple Services</option>
+        </select>
+      </div>
+      <div class="form-group full">
+        <label>Special Requests</label>
+        <input type="text" placeholder="Any specific preferences or questions?">
+      </div>
+    </div>
+    <button class="form-submit" onclick="alert('Appointment booked! We will confirm shortly via WhatsApp ✅'); document.getElementById('bookModal').classList.remove('open')">Confirm Appointment ✓</button>
+    <p class="form-note">📞 Or call/WhatsApp: +92 310 6666992</p>
+  </div>
+</div>
+
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-tag">Best Salon in Islamabad · I-8 Markaz</div>
+    <h1 class="hero-h1">
+      Beauty that
+      <em>empowers you.</em>
+    </h1>
+    <div class="hero-divider"></div>
+    <p class="hero-p">
+      Islamabad's most loved beauty destination — where expert stylists, premium products and a warm welcoming atmosphere come together for an unforgettable experience.
+    </p>
+    <div class="hero-actions">
+      <button class="btn-rose" onclick="document.getElementById('bookModal').classList.add('open')">Book Appointment</button>
+      <a href="#services" class="btn-outline">Our Services</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-num">4.8 ⭐</div>
+        <div class="stat-label">Google Rating</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">1,139</div>
+        <div class="stat-label">Happy Reviews</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">100%</div>
+        <div class="stat-label">Satisfaction</div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-mosaic">
+      <div class="mosaic-block"><span>💇‍♀️</span><div class="mosaic-label">Hair Styling</div></div>
+      <div class="mosaic-block"><span>💅</span><div class="mosaic-label">Nail Art</div></div>
+      <div class="mosaic-block"><span>✨</span><div class="mosaic-label">Highlights</div></div>
+      <div class="mosaic-block"><span>💄</span><div class="mosaic-label">Bridal Makeup</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="marquee-wrap">
+  <div class="marquee-inner">
+    HAIR STYLING & CUTS <span>✦</span> BALAYAGE & HIGHLIGHTS <span>✦</span> NANOPLASTICA <span>✦</span> BRIDAL MAKEUP <span>✦</span> NAIL ART & MANI-PEDI <span>✦</span> FACIALS & SKINCARE <span>✦</span> 4.8 STARS · 1,139 REVIEWS <span>✦</span> I-8 MARKAZ ISLAMABAD <span>✦</span> HAIR STYLING & CUTS <span>✦</span> BALAYAGE & HIGHLIGHTS <span>✦</span> NANOPLASTICA <span>✦</span> BRIDAL MAKEUP <span>✦</span>
+  </div>
+</div>
+
+<section class="services" id="services">
+  <div class="sec-tag"><div class="sec-label">What We Offer</div></div>
+  <h2 class="sec-h2">Our <em>Services</em></h2>
+  <div class="services-grid">
+    <div class="service-card">
+      <div class="service-icon">💇‍♀️</div>
+      <div class="service-name">Hair Cut & Style</div>
+      <p class="service-desc">Precision cuts tailored to your face shape and personality. From classic bobs to trendy layers — our stylists make it perfect.</p>
+      <div class="service-price">Starting from Rs. 800</div>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">🌟</div>
+      <div class="service-name">Balayage & Highlights</div>
+      <p class="service-desc">Sun-kissed balayage, baby lights, full highlights — our colour specialists deliver stunning results every time.</p>
+      <div class="service-price">Starting from Rs. 3,500</div>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">✨</div>
+      <div class="service-name">Nanoplastica & Treatments</div>
+      <p class="service-desc">Restore shine, eliminate frizz and transform your hair with our premium keratin and nanoplastica treatments.</p>
+      <div class="service-price">Starting from Rs. 5,000</div>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">💅</div>
+      <div class="service-name">Nails — Mani & Pedi</div>
+      <p class="service-desc">Gel, acrylic, nail art — stunning nails done by expert nail technicians. Your first time? You'll be in love!</p>
+      <div class="service-price">Starting from Rs. 1,200</div>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">💄</div>
+      <div class="service-name">Bridal & Party Makeup</div>
+      <p class="service-desc">Look breathtaking on your special day. Bridal packages include hair, makeup and trial session.</p>
+      <div class="service-price">Starting from Rs. 8,000</div>
+    </div>
+    <div class="service-card">
+      <div class="service-icon">🌸</div>
+      <div class="service-name">Facials & Skincare</div>
+      <p class="service-desc">Glow treatments, deep cleansing facials and skincare routines to leave your skin radiant and refreshed.</p>
+      <div class="service-price">Starting from Rs. 1,500</div>
+    </div>
+  </div>
+</section>
+
+<section class="about">
+  <div class="about-visual">
+    <span>💆‍♀️</span>
+    <div class="about-badge">
+      <span class="num">4.8</span>
+      <span class="txt">Google Stars</span>
+    </div>
+  </div>
+  <div class="about-content">
+    <div class="sec-tag"><div class="sec-label">About Emkaez</div></div>
+    <h2>Where beauty meets <em>confidence.</em></h2>
+    <p>Emkaez Makeup Studio & Salon has become Islamabad's most trusted beauty destination — known for professional results, friendly staff and services that exceed expectations every time.</p>
+    <p>From everyday cuts to bridal transformations, our team of expert stylists and artists bring passion and precision to every appointment.</p>
+    <div class="about-pills">
+      <span class="pill">Hair Colouring</span>
+      <span class="pill">Bridal Packages</span>
+      <span class="pill">Nail Art</span>
+      <span class="pill">Keratin</span>
+      <span class="pill">Facials</span>
+      <span class="pill">Balayage</span>
+      <span class="pill">Mani & Pedi</span>
+      <span class="pill">Makeup</span>
+    </div>
+  </div>
+</section>
+
+<section class="reviews">
+  <div class="sec-tag"><div class="sec-label">Client Love</div></div>
+  <h2 class="sec-h2" style="margin-top:0.5rem">What our clients <em>say</em></h2>
+  <div class="reviews-grid">
+    <div class="review-card">
+      <div class="review-quote">"</div>
+      <div class="review-stars">★★★★★</div>
+      <p class="review-text">"I got my highlights done and I'm beyond happy with the results. The team was extremely professional, friendly and attentive to every detail."</p>
+      <div class="review-name">Google Reviewer</div>
+      <div class="review-tag">Verified Review</div>
+    </div>
+    <div class="review-card">
+      <div class="review-quote">"</div>
+      <div class="review-stars">★★★★★</div>
+      <p class="review-text">"My balayage turned out super good. I am soooo happy! Magical results. Ask them what will suit your face — they will guide you perfectly!"</p>
+      <div class="review-name">Afzal A.</div>
+      <div class="review-tag">Verified Review</div>
+    </div>
+    <div class="review-card">
+      <div class="review-quote">"</div>
+      <div class="review-stars">★★★★★</div>
+      <p class="review-text">"First time getting my nails done and I'm absolutely in love! Beyond my expectations. Staff is really cooperative. Best services at reasonable prices!"</p>
+      <div class="review-name">Shiza A.</div>
+      <div class="review-tag">Verified Review</div>
+    </div>
+  </div>
+</section>
+
+<section class="booking">
+  <div>
+    <div class="sec-tag" style="margin-bottom:0.8rem;"><div class="sec-label" style="color:var(--rose-light)">Book With Us</div></div>
+    <h2>Ready for your <em>glow up?</em></h2>
+    <p>Book your appointment at Emkaez and let our experts take care of you. Walk in or book ahead to guarantee your slot.</p>
+    <button class="btn-rose" onclick="document.getElementById('bookModal').classList.add('open')" style="margin-top:0.5rem">Book Appointment Now</button>
+  </div>
+  <div class="booking-cards">
+    <div class="booking-card">
+      <div class="booking-icon">📍</div>
+      <div>
+        <h4>Location</h4>
+        <p>1 Pakeeza Market Street, near I-8 Markaz<br>I-8/4, Islamabad, Pakistan</p>
+      </div>
+    </div>
+    <div class="booking-card">
+      <div class="booking-icon">🕐</div>
+      <div>
+        <h4>Opening Hours</h4>
+        <p>Open Daily from 11:00 AM<br>Late appointments available</p>
+      </div>
+    </div>
+    <div class="booking-card">
+      <div class="booking-icon">📞</div>
+      <div>
+        <h4>Call or WhatsApp</h4>
+        <p>+92 310 6666992<br>Message us anytime!</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">
+    Emkaez
+    <span>Makeup Studio & Salon · Islamabad</span>
+  </div>
+  <ul class="footer-links">
+    <li><a href="#">Services</a></li>
+    <li><a href="#">Book</a></li>
+    <li><a href="#">Gallery</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
+  <p>© 2025 Emkaez Salon · Islamabad</p>
+</footer>
+
+<script>
+  const cards = document.querySelectorAll('.service-card');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) setTimeout(() => e.target.classList.add('visible'), i * 100);
+    });
+  }, { threshold: 0.1 });
+  cards.forEach(c => observer.observe(c));
+</script>
+</body>
+</html>
